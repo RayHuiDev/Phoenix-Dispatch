@@ -1,0 +1,290 @@
+HuiDev
+huidev
+The Silence is Deafening
+
+HuiDev — 12/20/2024 2:53 PM
+Haven't seen that in awhile
+sircapsalot — 12/20/2024 2:53 PM
+I'm a rubyist ha
+Rubyist, Pythonista, Rustacean in that order.
+Here's that handler for that message you saw in discord bots.
+
+# frozen_string_literal: true
+
+# message events
+def messages(bot, _config)
+  # dm to bot
+  bot.pm do |event|
+    event.respond("ack") if event.text.match?(/^syn$/i)
+  end
+end
+HuiDev — 12/20/2024 2:54 PM
+ahhhh
+See i went to the Java, Javascript, and C# route
+sircapsalot — 12/20/2024 2:55 PM
+sorry no, that's not right. That's if you DM the bot.
+# frozen_string_literal: true
+
+# testing hooks
+# @param [Discordrb::Bot] bot
+# @param [Hash,nil] config
+def testing(bot, config)
+  # PP: discord-bots, testserver: bots
+  channel_ids = config['channels']
+
+  # if the text "syn" is sent to a bot channel, return with an acknowledgement.
+  bot.message do |m|
+    if channel_ids.include?(m.channel.id)
+      # send dm
+      # m.author.dm.send_message("ACK") if m.text.match?(/^syn$/i)
+
+      # reply in the channel
+      m.channel.send_message("<@#{m.author.id}> — **ack**.") if m.text.match?(/^syn$/i)
+    end
+  end
+end
+there it is
+HuiDev — 12/20/2024 2:55 PM
+I was gonna say this didnt look right bot.pm do |event|
+I need to look into ruby
+that looks like fun
+sircapsalot — 12/20/2024 2:56 PM
+you may not know that a lot of projects were started with Ruby 😊 
+
+GitHub, Twitter, GitLab for starters
+HuiDev — 12/20/2024 2:56 PM
+Im assuming |m| is just a function?
+sircapsalot — 12/20/2024 2:57 PM
+it's a closure (ruby calls them blocks) but yeah. pretty much
+HuiDev — 12/20/2024 2:58 PM
+ if channel_ids.include?(m.channel.id) and this im assuming makes sure that it only works in the bot channel, and that channel_ids gets from the config file?
+sircapsalot — 12/20/2024 2:59 PM
+that's right. the config file is just a yaml file
+
+testing:
+  channels:
+    - 908203959875936288 # PPRP: discord-bots
+HuiDev — 12/20/2024 3:00 PM
+if you know one language, you know all XD
+sircapsalot — 12/20/2024 3:00 PM
+💯%
+the bot is done, i'm just plugging it into a production server and hooking CI/CD in
+HuiDev — 12/20/2024 3:03 PM
+whats the main purpose for it?
+sircapsalot — 12/20/2024 3:05 PM
+Pretty much anything custom we want.  if-this-then-that.
+
+he's our little helper. Right now he doesn't do too much, but he's got potential ha
+HuiDev — 12/20/2024 3:06 PM
+Are yall looking to reduce how many bots yall have? 
+
+Like eventually make it so it does everything that yall currently have on hand
+sircapsalot — 12/20/2024 3:07 PM
+i mean that's possible, but no. that's not the intent.
+
+I'm picturing random things that the Discord Support may need, or automated logging type stuff.  Discord Support could add a ❗ reaction emoji on a message and it would do something like censor it.  whatever
+HuiDev — 12/20/2024 3:08 PM
+that makes sense
+
+i vote to keep the bots name as owen jr
+sircapsalot — 12/20/2024 3:09 PM
+oh that's not changing haha
+what sort of stuff have you done / do you do? development wise?
+HuiDev — 12/20/2024 3:12 PM
+Used to do a lot with node.js and bot development, but havent touched that in awhile
+I also used to make Plugins for minecraft servers, but again, havent done that in awhile either
+
+Right now ive been focusing on front end and backend web development, making websites and such.
+My next project as soon as im done with the one for LSPD is gonna be a ticketing system, just for practice
+my current project is hosting here (Only domain that i had free)
+https://ordertothechaos.com/
+still work in progress making it responsive and such
+sircapsalot — 12/20/2024 3:17 PM
+neat!
+did you use a theme or front-end framework, or is this all custom HTML/CSS/JS?
+HuiDev — 12/20/2024 3:17 PM
+all Html/css/js
+which is why its taking me so long to actually get work done on it
+for whatever reason the footer on the handbook page has just completely dissapeared and im unsure why, so i gotta find what happened to it
+sircapsalot — 12/20/2024 3:22 PM
+looks like the footer is nested in the div.body
+
+# Handbook.html
+%html
+  %body
+    %div.header
+    %div.body
+      %div.footer
+    
+# index.html
+%html
+  %body
+    %div.header
+    %div.body
+    %div.footer
+HuiDev — 12/20/2024 3:25 PM
+you are right, theres a extra </div> that i lef it there
+actuall that wasnt the problem, i didnt have the Iframe in its own div so it was covering the footer
+HuiDev — 12/20/2024 3:33 PM
+there we go, all better now
+sircapsalot — 12/20/2024 4:01 PM
+would love to hear about your journey as you go! Not sure if you intend on making a career out of it, but let's stay in touch.
+sircapsalot — 12/21/2024 11:02 AM
+Would you be willing to help me get my FOV set up like yours sometime?
+HuiDev — 12/21/2024 11:02 AM
+absolutly(Edited)
+absolutely
+Ill be on for another 2 hours, then be off for probably around 2 hours, then be back on the rest of the night
+sircapsalot — 12/21/2024 11:04 AM
+Is it easy enough to link or list the instructions, or do we need to do it via voice
+HuiDev — 12/21/2024 11:05 AM
+Easy enough to list, give me like five minutes
+sircapsalot — 12/21/2024 11:05 AM
+🙏
+HuiDev — 12/21/2024 11:11 AM
+First Launch FiveM and go to settings.
+From Settings: 
+Settings
+  -> Game
+
+Where it says Update Channel, change the build to Latest (Unstable).
+Restart Fivem.
+After Restarting FiveM, open your F8 Console and type profile_fpsFieldOfView <#>
+I would recommend join A server do to this so you can see the effects happening in game.
+However due to the announcement by johnny where the AC has issues with people in the latest build I wouldnt recommend joining Phoenix. 
+I would also recommend setting it while you are in a vehicle, as it can cause some clipping
+HuiDev — 1/1/2025 3:51 AM
+I've looked into it, if someone more familar with Lua and Fivem can edit this plugin to just include the trunk, i d love to see this, otherwise i wouldnt worry about it. Ive tried to take a look at it, but im very unfamiler with fivepd api and lua
+https://github.com/PBogi/FivePDIntuitiveMenus
+GitHub
+GitHub - PBogi/FivePDIntuitiveMenus: Intuitive Menus for FivePD
+Intuitive Menus for FivePD. Contribute to PBogi/FivePDIntuitiveMenus development by creating an account on GitHub.
+GitHub - PBogi/FivePDIntuitiveMenus: Intuitive Menus for FivePD
+sircapsalot — 1/11/2025 7:08 PM
+unbanned
+sircapsalot — Today at 11:48 AM
+https://gitlab.nerdyjohnny.com/users/sign_in
+ray / 2G8v7kT9h3J9mQ
+GitLab
+Sign in · GitLab
+Phoenix Protocol
+Image
+git remote add origin https://ray@gitlab.nerdyjohnny.com/external/phoenix-dispatch.git
+git config --global user.name "ray"
+sircapsalot — Today at 11:55 AM
+git config --global user.email "ray@example.com"
+git add .
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudio
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudio
+
+### VisualStudio ###
+## Ignore Visual Studio temporary files, build results, and
+## files generated by popular Visual Studio add-ons.
+##
+## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
+# Mono auto generated files
+mono_crash.*
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+# Uncomment if you have tasks that create the project's static files in wwwroot
+#wwwroot/
+
+# Visual Studio 2017 auto generated files
+Generated\ Files/
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NUnit
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+
+# Build Results of an ATL Project
+[Dd]ebugPS/
+[Rr]eleasePS/
+dlldata.c
+
+# Benchmark Results
+BenchmarkDotNet.Artifacts/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# StyleCop
+StyleCopReport.xml
+
+# Files built by Visual Studio
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+.builds
+... (305 lines left)
+Collapse
+message.txt
+8 KB
+﻿
+sircapsalot
+sircapsalot
+ 
+E pluribus unum. 🇺🇸
+
+https://theunitedstates.earth/
+
+There are currently 50 States in the Union.
+Which State will be next to join?  Scotland? Ontario?  What Star will be next on the flag?
