@@ -7,6 +7,7 @@ using System.Speech.Synthesis;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using static WindowsFormsApp1.Form1;
 
 namespace WindowsFormsApp1
 {
@@ -48,13 +49,77 @@ namespace WindowsFormsApp1
             unitGridView.CellFormatting += unitGridView_CellFormatting;
             unitGridView.CellValueChanged += unitGridView_CellValueChanged;
             unitGridView.CurrentCellDirtyStateChanged += unitGridView_CurrentCellDirtyStateChanged;
+            unitGridView.CellClick += unitGridView_CellClick;
+            comboBox1.SelectedValueChanged += comboBox1_SelectedValueChanged;
             this.KeyPreview = true;
+        }
+        private void comboBox1_SelectedValueChanged(object sender, EventArgs e)
+        {
+            string selectedValue = comboBox1.SelectedItem?.ToString();
+
+            if (selectedValue == "LSPD")
+            {
+                label4.Text = "L-";
+            }
+            else if (selectedValue == "PBPD") // Ensure index matches the item in the list
+            {
+                label4.Text = "P-";
+            }
+            else if (selectedValue == "LCSO") // Ensure index matches the item in the list
+            {
+                label4.Text = "C-";
+            }
+            else if (selectedValue == "SAHP") // Ensure index matches the item in the list
+            {
+                label4.Text = "H-";
+            }
+            else if (selectedValue == "SAMS") // Ensure index matches the item in the list
+            {
+                label4.Text = "E-";
+            }
+            else if (selectedValue == "SADOT") // Ensure index matches the item in the list
+            {
+                label4.Text = "D-";
+            }
+        }
+
+        public static class Prompt
+        {
+            public static string ShowDialog(string text, string caption)
+            {
+                Form prompt = new Form()
+                {
+                    Width = 300,
+                    Height = 150,
+                    FormBorderStyle = FormBorderStyle.FixedDialog,
+                    Text = caption,
+                    ForeColor = Color.White,
+                    StartPosition = FormStartPosition.CenterScreen,
+                    BackColor = Color.FromArgb(35, 35, 35),
+                };
+
+                Label textLabel = new Label() { Left = 50, Top = 20, Text = text, AutoSize = true };
+                TextBox inputBox = new TextBox() { Left = 50, Top = 50, Width = 200 };
+
+                Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 80, DialogResult = DialogResult.OK };
+                confirmation.Click += (sender, e) => { prompt.Close(); };
+
+                prompt.Controls.Add(textLabel);
+                prompt.Controls.Add(inputBox);
+                prompt.Controls.Add(confirmation);
+                prompt.AcceptButton = confirmation;
+
+                return prompt.ShowDialog() == DialogResult.OK ? inputBox.Text : string.Empty;
+            }
         }
         private void unitGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && e.ColumnIndex == unitGridView.Columns["Status"].Index)
             {
                 string callSign = unitGridView.Rows[e.RowIndex].Cells["CallSign"].Value?.ToString();
+
+                var unit = units.FirstOrDefault(u => u.CallSign == callSign);
+                if (unit == null) return;
 
                 if (!string.IsNullOrEmpty(callSign))
                 {
@@ -63,18 +128,102 @@ namespace WindowsFormsApp1
                     {
                         if (statusForm.ShowDialog() == DialogResult.OK)
                         {
-                            // Update the unit's status with the selected value
                             var selectedStatus = statusForm.SelectedStatus;
                             unitGridView.Rows[e.RowIndex].Cells["Status"].Value = selectedStatus;
+                            unit.Status = selectedStatus; // Update the units list
                         }
                     }
                 }
             }
+            if (e.RowIndex >= 0 && e.ColumnIndex == unitGridView.Columns["Activity"].Index)
+            {
+                string callSign = unitGridView.Rows[e.RowIndex].Cells["CallSign"].Value?.ToString();
+                var unit = units.FirstOrDefault(u => u.CallSign == callSign);
+                if (unit == null) return;
+
+                if (!string.IsNullOrEmpty(callSign))
+                {
+                    // Open the StatusForm to select a new status
+                    using (ActivityForm activityForm = new ActivityForm())
+                    {
+                        if (activityForm.ShowDialog() == DialogResult.OK)
+                        {
+                            // Update the unit's status with the selected value
+                            var selectedActivity = activityForm.selectedActivity;
+                            unitGridView.Rows[e.RowIndex].Cells["Activity"].Value = selectedActivity;
+                            unit.Activity = selectedActivity; // Update the units list
+                        }
+                    }
+                }
+            }
+            
+            if (e.RowIndex >= 0 && e.ColumnIndex == unitGridView.Columns["Location"].Index)
+            {
+                string callSign = unitGridView.Rows[e.RowIndex].Cells["CallSign"].Value?.ToString();
+                var unit = units.FirstOrDefault(u => u.CallSign == callSign);
+                if (unit == null) return;
+
+                if (!string.IsNullOrEmpty(callSign))
+                {
+                    // Open the StatusForm to select a new status
+                   string location = Prompt.ShowDialog("Enter the location", "Location");
+                    unitGridView.Rows[e.RowIndex].Cells["Location"].Value = location;
+                    unit.Location = location;
+                }
+            }
+
+            if (e.RowIndex >= 0 && e.ColumnIndex == unitGridView.Columns["UnionCallSign"].Index)
+            {
+                string callSign = unitGridView.Rows[e.RowIndex].Cells["CallSign"].Value?.ToString();
+                var unit = units.FirstOrDefault(u => u.CallSign == callSign);
+                if (unit == null) return;
+
+                if (!string.IsNullOrEmpty(callSign))
+                {
+                    // Open the StatusForm to select a new status
+                    using (UnionCallSignForm unionCallSignForm = new UnionCallSignForm())
+                    {
+                        if (unionCallSignForm.ShowDialog() == DialogResult.OK)
+                        {
+                            // Update the unit's status with the selected value
+                            var selectedUnionCallSign = unionCallSignForm.SelectedUnionCallSign;
+                            unitGridView.Rows[e.RowIndex].Cells["UnionCallSign"].Value = selectedUnionCallSign;
+                            unit.UnionCallSign = selectedUnionCallSign; // Update the units list
+                        }
+                    }
+                }
+
+            }
         }
+        private void unitGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Check if the clicked cell is in the "Notes" column
+            if (e.RowIndex >= 0 && e.ColumnIndex == unitGridView.Columns["Notes"].Index)
+            {
+                string callSign = unitGridView.Rows[e.RowIndex].Cells["CallSign"].Value?.ToString();
+                var unit = units.FirstOrDefault(u => u.CallSign == callSign);
+                if (unit == null) return;
+
+                if (!string.IsNullOrEmpty(callSign))
+                {
+                    // Prompt the user to enter the notes
+                    string notes = Prompt.ShowDialog("Enter the notes", "Notes");
+
+                    // Update the "Notes" field with the entered text
+                    unitGridView.Rows[e.RowIndex].Cells["Notes"].Value = notes;
+                    unit.Notes = notes; // Update the units list
+                    unitGridView.ClearSelection();
+                    unitGridView.Refresh();
+
+                }
+            }
+
+        }
+
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
             // Check if "1" on the numpad is pressed
-            if (e.KeyCode == Keys.NumPad1)
+            if (e.KeyCode == Keys.NumPad0)
             {
                 // Find the selected row
                 if (unitGridView.SelectedRows.Count > 0)
@@ -85,6 +234,8 @@ namespace WindowsFormsApp1
                         string callSign = unitGridView.Rows[rowIndex].Cells["CallSign"].Value?.ToString();
                         if (!string.IsNullOrEmpty(callSign))
                         {
+                            var unit = units.FirstOrDefault(u => u.CallSign == callSign);
+                            if (unit == null) return;
                             // Open the StatusForm to select a new status
                             using (StatusForm statusForm = new StatusForm())
                             {
@@ -93,6 +244,7 @@ namespace WindowsFormsApp1
                                     // Update the unit's status with the selected value
                                     var selectedStatus = statusForm.SelectedStatus;
                                     unitGridView.Rows[rowIndex].Cells["Status"].Value = selectedStatus;
+                                    unit.Status = selectedStatus; // Update the units list
                                 }
                             }
                         }
@@ -114,15 +266,39 @@ namespace WindowsFormsApp1
                 return;
             }
 
+            string callprefix = "";
+            switch (department)
+            {
+                case "LSPD":
+                    callprefix = "L-";
+                    break;
+                case "PBPD":
+                    callprefix = "P-";
+                    break;
+                case "SAMS":
+                    callprefix = "E-";
+                    break;
+                case "LCSO":
+                    callprefix = "C-";
+                    break;
+                case "SAHP":
+                    callprefix = "H-";
+                    break;
+                case "SADOT":
+                    callprefix = "D-";
+                    break;
+
+            }
+
             Unit newUnit = new Unit
             {
-                CallSign = CallSign,
+                CallSign = callprefix + CallSign,
                 Name = nameText,
                 Status = "Available",
                 Location = "Unknown",
                 Notes = "",
-                Activity = "",
-                UnionCallSign = "",
+                Activity = " ",
+                UnionCallSign = " ",
                 Department = department
             };
 
@@ -131,9 +307,12 @@ namespace WindowsFormsApp1
             callSign.Text = "";
             name.Text = "";
 
-            AddToActiveGridView(CallSign);
+            AddToActiveGridView(callprefix + CallSign);
+            
 
             unitGridView.Sort(unitGridView.Columns["CallSign"], System.ComponentModel.ListSortDirection.Ascending);
+            unitGridView.ClearSelection();
+            unitGridView.Refresh();
         }
 
         // Handle Enter key to add unit
@@ -195,19 +374,20 @@ namespace WindowsFormsApp1
                 var cmbStatus = new DataGridViewButtonColumn { Name = "Status", HeaderText = "Status", Text = "Available" };
                 unitGridView.Columns.Add(cmbStatus);
 
-                unitGridView.Columns.Add("Location", "Location");
+                var locationColumn = new DataGridViewButtonColumn { Name = "Location", HeaderText = "Location", UseColumnTextForButtonValue = false };
+                unitGridView.Columns.Add(locationColumn);
                 unitGridView.Columns.Add("Notes", "Notes");
 
-                var activityColumn = new DataGridViewComboBoxColumn { Name = "Activity", HeaderText = "Activity" };
-                activityColumn.Items.AddRange("",
+                var activityColumn = new DataGridViewButtonColumn { Name = "Activity", HeaderText = "Activity", UseColumnTextForButtonValue = false };
+                unitGridView.Columns.Add(activityColumn);
+                /*activityColumn.Items.AddRange("",
                     "Dispatcher", "Routine Patrol", "D1 Patrol",
                     "D2 Patrol", "D3 Patrol", "D4 Patrol", "D5 Patrol",
-                    "Traffic Stop", "Vehicle Pursiut", "Other(Notes)");
-                unitGridView.Columns.Add(activityColumn);
+                    "Traffic Stop", "Vehicle Pursiut", "Other(Notes)");*/
 
-                var unionCallSignColumn = new DataGridViewComboBoxColumn { Name = "UnionCallSign", HeaderText = "Union Call Sign" };
-                unionCallSignColumn.Items.AddRange("", "Union 1", "Union 2", "Union 3", "Union 4", "Union 5", "Union 6");
+                var unionCallSignColumn = new DataGridViewButtonColumn { Name = "UnionCallSign", HeaderText = "Union Call Sign", UseColumnTextForButtonValue = false };
                 unitGridView.Columns.Add(unionCallSignColumn);
+               // unionCallSignColumn.Items.AddRange("", "Union 1", "Union 2", "Union 3", "Union 4", "Union 5", "Union 6");
 
                 var btnRemove = new DataGridViewButtonColumn
                 {
@@ -233,8 +413,7 @@ namespace WindowsFormsApp1
                 unitGridView.Columns["UnionCallSign"].Width = 50;
                 unitGridView.Columns["Remove"].Width = 65;
 
-                unitGridView.Columns["CallSign"].ReadOnly = true;
-                unitGridView.Columns["Name"].ReadOnly = true;
+                unitGridView.ReadOnly = true;
                 foreach (DataGridViewColumn column in unitGridView.Columns)
                 {
                     column.SortMode = DataGridViewColumnSortMode.NotSortable;
@@ -251,31 +430,30 @@ namespace WindowsFormsApp1
 
             if (MessageBox.Show("Are you sure you want to remove this unit?", "Remove Unit", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                RemoveUnitFromGrids(callSignToRemove);
-            }
-        }
-
-        // Remove unit from grids
-        private void RemoveUnitFromGrids(string callSignToRemove)
-        {
-            var unitToRemove = units.FirstOrDefault(unit => unit.CallSign == callSignToRemove);
-            if (unitToRemove != null)
-            {
-                units.Remove(unitToRemove);
-
-                // Remove timer for this unit if it exists
-                if (onSceneTimers.ContainsKey(callSignToRemove))
+                var unitToRemove = units.FirstOrDefault(unit => unit.CallSign == callSignToRemove);
+                if (unitToRemove != null)
                 {
-                    onSceneTimers.Remove(callSignToRemove);
+                    units.Remove(unitToRemove);
+
+                    // Remove the row directly from the grid
+                    foreach (DataGridViewRow row in unitGridView.Rows)
+                    {
+                        if (row.Cells["CallSign"].Value?.ToString() == callSignToRemove)
+                        {
+                            unitGridView.Rows.Remove(row);
+                            break;
+                        }
+                    }
+
+                    // Clear and reapply the active grid logic
+                    RemovefromActiveGrid(callSignToRemove);
+
+                    // Refresh the grid to ensure proper redrawing
+                    unitGridView.ClearSelection();
+                    unitGridView.Refresh();
                 }
             }
-
-            RemovefromActiveGrid(callSignToRemove);
-
-            // Refresh the unit grid view to reflect the removal
-            RefreshUnitGridView();
         }
-        // Remove from active grid view
         private void RemovefromActiveGrid(string callSignToRemove)
         {
             var activeRowToRemove = activeGridView.Rows.Cast<DataGridViewRow>()
@@ -286,24 +464,6 @@ namespace WindowsFormsApp1
             // Refresh the active grid after removal
             activeGridView.Refresh();
         }
-
-        // Refresh the unit grid view after changes
-        private void RefreshUnitGridView()
-        {
-            unitGridView.Rows.Clear(); // Clear the existing rows in the grid
-
-            foreach (var unit in units.OrderBy(u => u.CallSign)) // Sort the units by CallSign
-            {
-                unitGridView.Rows.Add(unit.CallSign, unit.Name, unit.Department, unit.Status, unit.Location, unit.Notes, unit.Activity, unit.UnionCallSign);
-            }
-
-            // Reapply sorting by CallSign after adding rows
-            unitGridView.Sort(unitGridView.Columns["CallSign"], System.ComponentModel.ListSortDirection.Ascending);
-
-            unitGridView.Refresh(); // Ensure the grid reflects changes
-        }
-        // Handle timer tick for on-scene timers
-
         private SpeechSynthesizer synthesizer = new SpeechSynthesizer();
         private HashSet<string> announcedUnits = new HashSet<string>();
 
@@ -320,7 +480,7 @@ namespace WindowsFormsApp1
                 // Check if the timer exceeds 5 seconds and hasn't been announced yet
                 if (elapsedTime >= TimeSpan.FromSeconds(5) && !announcedUnits.Contains(callSign))
                 {
-                    string text = $"Check Status on {callSign}";
+                    string text = $"Check Status for {callSign}";
                     string processedText = ReplaceLettersInCallsign(text);
 
                     // Announce and mark the unit as announced
@@ -343,11 +503,12 @@ namespace WindowsFormsApp1
                 { 'F', "Foxtrot" },
                 { 'D', "Delta" },
                 { 'V', "Victor" },
+                { 'E', "Edward" },
                 // Add more replacements if needed
             };
 
             // Find the "on" keyword and extract the callSign part
-            int index = text.LastIndexOf("on ");
+            int index = text.LastIndexOf("for ");
             if (index == -1 || index + 3 >= text.Length)
             {
                 // If "on" not found or no callSign after it, return text unchanged
@@ -387,7 +548,6 @@ namespace WindowsFormsApp1
             int yOffset = 5;
             int maxHeight = 103;
             int labelHeight = 25;
-            int maxWidth = 1167;
             int labelWidth = 200;
 
             int maxLabelsPerColumn = maxHeight / labelHeight;
@@ -570,6 +730,7 @@ namespace WindowsFormsApp1
             activeGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             activeGridView.MultiSelect = false;
             activeGridView.AllowUserToResizeRows = false;
+            activeGridView.ReadOnly = true;
         }
     }
 }

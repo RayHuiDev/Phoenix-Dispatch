@@ -41,6 +41,8 @@
             this.timerPanel = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.unitGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.activeGridView)).BeginInit();
             this.SuspendLayout();
@@ -63,7 +65,7 @@
             this.callSign.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.callSign.Font = new System.Drawing.Font("Impact", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.callSign.ForeColor = System.Drawing.Color.White;
-            this.callSign.Location = new System.Drawing.Point(180, 41);
+            this.callSign.Location = new System.Drawing.Point(161, 41);
             this.callSign.Margin = new System.Windows.Forms.Padding(5, 2, 3, 2);
             this.callSign.MaxLength = 7;
             this.callSign.Multiline = false;
@@ -78,7 +80,7 @@
             this.callSignLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.callSignLabel.Font = new System.Drawing.Font("Impact", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.callSignLabel.ForeColor = System.Drawing.Color.White;
-            this.callSignLabel.Location = new System.Drawing.Point(171, 18);
+            this.callSignLabel.Location = new System.Drawing.Point(148, 18);
             this.callSignLabel.Name = "callSignLabel";
             this.callSignLabel.Size = new System.Drawing.Size(73, 21);
             this.callSignLabel.TabIndex = 2;
@@ -90,7 +92,7 @@
             this.nameLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.nameLabel.Font = new System.Drawing.Font("Impact", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nameLabel.ForeColor = System.Drawing.Color.White;
-            this.nameLabel.Location = new System.Drawing.Point(285, 19);
+            this.nameLabel.Location = new System.Drawing.Point(262, 19);
             this.nameLabel.Name = "nameLabel";
             this.nameLabel.Size = new System.Drawing.Size(53, 21);
             this.nameLabel.TabIndex = 4;
@@ -102,7 +104,7 @@
             this.name.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.name.Font = new System.Drawing.Font("Impact", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.name.ForeColor = System.Drawing.Color.White;
-            this.name.Location = new System.Drawing.Point(294, 42);
+            this.name.Location = new System.Drawing.Point(271, 42);
             this.name.Margin = new System.Windows.Forms.Padding(5, 2, 3, 2);
             this.name.MaxLength = 16;
             this.name.Multiline = false;
@@ -118,7 +120,7 @@
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.White;
             this.button1.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.button1.Location = new System.Drawing.Point(458, 41);
+            this.button1.Location = new System.Drawing.Point(435, 41);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(76, 28);
@@ -146,10 +148,10 @@
             this.activeGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.activeGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.activeGridView.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.activeGridView.Location = new System.Drawing.Point(12, 119);
+            this.activeGridView.Location = new System.Drawing.Point(12, 114);
             this.activeGridView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.activeGridView.Name = "activeGridView";
-            this.activeGridView.Size = new System.Drawing.Size(129, 392);
+            this.activeGridView.Size = new System.Drawing.Size(129, 398);
             this.activeGridView.TabIndex = 7;
             // 
             // activeHeading
@@ -158,7 +160,7 @@
             this.activeHeading.BackColor = System.Drawing.Color.Transparent;
             this.activeHeading.Font = new System.Drawing.Font("Impact", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.activeHeading.ForeColor = System.Drawing.Color.White;
-            this.activeHeading.Location = new System.Drawing.Point(32, 96);
+            this.activeHeading.Location = new System.Drawing.Point(32, 91);
             this.activeHeading.Name = "activeHeading";
             this.activeHeading.Size = new System.Drawing.Size(92, 21);
             this.activeHeading.TabIndex = 8;
@@ -173,12 +175,12 @@
             "LCSO",
             "SAHP",
             "PBPD",
-            "SADOT",
-            "SAMS"});
-            this.comboBox1.Location = new System.Drawing.Point(36, 41);
+            "SAMS",
+            "SADOT"});
+            this.comboBox1.Location = new System.Drawing.Point(47, 40);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(122, 28);
+            this.comboBox1.Size = new System.Drawing.Size(77, 28);
             this.comboBox1.TabIndex = 9;
             this.comboBox1.Text = "LSPD";
             // 
@@ -210,9 +212,32 @@
             this.label2.ForeColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(698, 19);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(102, 42);
+            this.label2.Size = new System.Drawing.Size(166, 42);
             this.label2.TabIndex = 12;
-            this.label2.Text = "1 = Set Status\r\n\r\n";
+            this.label2.Text = "Numpad 0 = Set Status\r\n\r\n";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label3.Font = new System.Drawing.Font("Impact", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(99, 44);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(0, 21);
+            this.label3.TabIndex = 13;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(85)))));
+            this.label4.Font = new System.Drawing.Font("Impact", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(131, 41);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(26, 27);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "L-";
             // 
             // Form1
             // 
@@ -220,6 +245,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.ClientSize = new System.Drawing.Size(1334, 646);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.timerPanel);
@@ -264,6 +291,8 @@
         private System.Windows.Forms.Panel timerPanel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
     }
 }
 

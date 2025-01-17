@@ -23,7 +23,10 @@ namespace WindowsFormsApp1
             btnUnavailable.Click += (s, e) => SetStatusAndClose("Unavailable");
             btnEnRoute.Click += (s, e) => SetStatusAndClose("En Route");
             btnOnScene.Click += (s, e) => SetStatusAndClose("On Scene");
-            btnOffDuty.Click += (s, e) => SetStatusAndClose("Off-Duty");
+            btnOffDuty.Click += (s, e) => SetStatusAndClose("Off Duty");
+            btnPursuit.Click += (s, e) => SetStatusAndClose("Pursuit");
+            btnOOC.Click += (s, e) => SetStatusAndClose("OOC");
+            btnDispatch.Click += (s, e) => SetStatusAndClose("Dispatch");
         }
 
         private void StatusForm_KeyDown(object sender, KeyEventArgs ev)
@@ -56,6 +59,18 @@ namespace WindowsFormsApp1
                 case Keys.NumPad6:
                     SetStatusAndClose("Off Duty");
                     break;
+                case Keys.D7:
+                case Keys.NumPad7:
+                    SetStatusAndClose("Pursiut");
+                    break;
+                case Keys.D8:
+                case Keys.NumPad8:
+                    SetStatusAndClose("OOC");
+                    break;
+                case Keys.D9:
+                case Keys.NumPad9:
+                    SetStatusAndClose("Dispatch");
+                    break;
             }
         }
 
@@ -64,6 +79,16 @@ namespace WindowsFormsApp1
             SelectedStatus = status;
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private void btnUnavailable_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
