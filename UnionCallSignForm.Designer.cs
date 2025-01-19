@@ -49,7 +49,7 @@
             this.button0.Name = "button0";
             this.button0.Size = new System.Drawing.Size(219, 28);
             this.button0.TabIndex = 7;
-            this.button0.Text = "No Union - Numpad 1";
+            this.button0.Text = "No Union - Numpad 0\r\n";
             this.button0.UseVisualStyleBackColor = false;
             // 
             // button1
@@ -65,7 +65,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(219, 28);
             this.button1.TabIndex = 8;
-            this.button1.Text = "Union 1 - Numpad 2";
+            this.button1.Text = "Union 1 - Numpad 1\r\n";
             this.button1.UseVisualStyleBackColor = false;
             // 
             // button2
@@ -81,7 +81,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(219, 28);
             this.button2.TabIndex = 9;
-            this.button2.Text = "Union 2 - Numpad 3";
+            this.button2.Text = "Union 2 - Numpad 2\r\n";
             this.button2.UseVisualStyleBackColor = false;
             // 
             // button3
@@ -97,7 +97,7 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(219, 28);
             this.button3.TabIndex = 10;
-            this.button3.Text = "Union 3 - Numpad 4";
+            this.button3.Text = "Union 3 - Numpad 3";
             this.button3.UseVisualStyleBackColor = false;
             // 
             // button4
@@ -113,7 +113,7 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(219, 28);
             this.button4.TabIndex = 11;
-            this.button4.Text = "Union 4 - Numpad 5";
+            this.button4.Text = "Union 4 - Numpad 4\r\n";
             this.button4.UseVisualStyleBackColor = false;
             // 
             // button5
@@ -129,7 +129,7 @@
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(219, 28);
             this.button5.TabIndex = 12;
-            this.button5.Text = "Union 5 - Numpad 6";
+            this.button5.Text = "Union 5 - Numpad 5";
             this.button5.UseVisualStyleBackColor = false;
             // 
             // UnionCallSignForm

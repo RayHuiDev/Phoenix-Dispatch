@@ -12,7 +12,7 @@ namespace WindowsFormsApp1
             InitializeComponent();
             InitializeButtonEvents();
             KeyPreview = true;
-            this.KeyDown += StatusForm_KeyDown;
+            this.KeyDown += UnionForm_KeyDown;
         }
 
         private void InitializeButtonEvents()
@@ -26,34 +26,28 @@ namespace WindowsFormsApp1
             button5.Click += (s, e) => SetStatusAndClose("Union 5");
         }
 
-        private void StatusForm_KeyDown(object sender, KeyEventArgs ev)
+        private void UnionForm_KeyDown(object sender, KeyEventArgs ev)
         {
 
             switch (ev.KeyCode)
             {
 
-                case Keys.D1:
-                case Keys.NumPad1:
+                case Keys.NumPad0:
                     SetStatusAndClose("");
                     break;
-                case Keys.D2:
-                case Keys.NumPad2:
+                case Keys.NumPad1:
                     SetStatusAndClose("Union 1");
                     break;
-                case Keys.D3:
-                case Keys.NumPad3:
+                case Keys.NumPad2:
                     SetStatusAndClose("Union 2");
                     break;
-                case Keys.D4:
-                case Keys.NumPad4:
+                case Keys.NumPad3:
                     SetStatusAndClose("Union 3");
                     break;
-                case Keys.D5:
-                case Keys.NumPad5:
+                case Keys.NumPad4:
                     SetStatusAndClose("Union 4");
                     break;
-                case Keys.D6:
-                case Keys.NumPad6:
+                case Keys.NumPad5:
                     SetStatusAndClose("Union 5");
                     break;
             }
