@@ -6,6 +6,7 @@ using System.Speech.Synthesis;
 using System.Text;
 
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 namespace WindowsFormsApp1
@@ -58,13 +59,20 @@ namespace WindowsFormsApp1
             comboBox1.SelectedValueChanged += comboBox1_SelectedValueChanged;
             this.KeyPreview = true;
             this.KeyDown += new KeyEventHandler(Form_KeyDown);
+            pictureBox2.MouseDown += PictureBox_MouseDown;
+            pictureBox2.MouseMove += PictureBox_MouseMove;
+            pictureBox2.MouseUp += PictureBox_MouseUp;
+            pictureBox2.Paint += PictureBox_Paint;
+
+            SetInitialMapPosition(new Point(2941, 6311));
+
         }
-
-
         // DEPARTMENT DROPDOWN PREFIX
         private void comboBox1_SelectedValueChanged(object sender, EventArgs e)
         {
             string selectedValue = comboBox1.SelectedItem?.ToString();
+            label4.AutoSize = false;
+            label4.Size = new Size(30, 28);
 
             if (selectedValue == "LSPD")
             {
@@ -182,6 +190,131 @@ namespace WindowsFormsApp1
             }
         }
 
+
+        private Dictionary<string, Point> postalCoordinates = new Dictionary<string, Point>
+        {
+            { "5022", new Point(2922, 4764) },
+            {"8090", new Point(2086, 6300) },
+            {"8013", new Point(2053, 6255) },
+        };
+
+        private List<Point> currentMarkers = new List<Point>();
+
+        private bool isDragging = false;
+        private Point lastMousePosition;
+        private Point imageOffset = new Point(0, 0); // Image position inside the PictureBox
+
+        // Paint event to display the image with the offset and zoom
+        private void PictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            if (pictureBox2.Image != null)
+            {
+                e.Graphics.Clear(pictureBox2.BackColor);
+
+                // Calculate the scaled image size based on the zoom factor
+                int scaledWidth = pictureBox2.Image.Width;
+                int scaledHeight = pictureBox2.Image.Height;
+                // Draw the image using the new scaled size and offset
+                e.Graphics.DrawImage(pictureBox2.Image, imageOffset.X, imageOffset.Y, scaledWidth, scaledHeight);
+            }
+        }
+
+        // Mouse Down - Start dragging
+        private void PictureBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            isDragging = true;
+            lastMousePosition = e.Location;
+        }
+
+        // Mouse Move - Update offset during dragging
+        private void PictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isDragging)
+            {
+                // Calculate movement
+                int deltaX = e.X - lastMousePosition.X;
+                int deltaY = e.Y - lastMousePosition.Y;
+
+                // Update image offset to move the image
+                imageOffset.X += deltaX;
+                imageOffset.Y += deltaY;
+
+                // Clamp the offset to prevent the image from going outside the PictureBox bounds
+                int maxOffsetX = 0;
+                int maxOffsetY = 0;
+
+                // Ensure the image does not go outside the left/top boundaries
+                if (imageOffset.X > maxOffsetX)
+                    imageOffset.X = maxOffsetX;
+                if (imageOffset.Y > maxOffsetY)
+                    imageOffset.Y = maxOffsetY;
+
+                // Ensure the image does not go outside the right/bottom boundaries
+                if (imageOffset.X < pictureBox2.Width - pictureBox2.Image.Width)
+                    imageOffset.X = pictureBox2.Width - pictureBox2.Image.Width;
+                if (imageOffset.Y < pictureBox2.Height - pictureBox2.Image.Height)
+                    imageOffset.Y = pictureBox2.Height - pictureBox2.Image.Height;
+
+                lastMousePosition = e.Location;
+
+                // Redraw image with the new position
+                pictureBox2.Invalidate();
+            }
+        }
+
+        // Mouse Up - Stop dragging
+        private void PictureBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            isDragging = false;
+        }
+
+        // Move the map to center on the selected location
+        private void CenterMapOnLocation(Point location)
+        {
+            if (pictureBox2.Image == null) return;
+
+            int formCenterX = pictureBox2.Width / 2;
+            int formCenterY = pictureBox2.Height / 2;
+
+            // Adjust image offset so that the location appears at the center, considering zoom
+            imageOffset.X = formCenterX - location.X;
+            imageOffset.Y = formCenterY - location.Y;
+
+            // Clamp the offset to prevent the image from going outside the PictureBox bounds
+            int maxOffsetX = 0;
+            int maxOffsetY = 0;
+
+            // Ensure the image does not go outside the left/top boundaries
+            if (imageOffset.X > maxOffsetX)
+                imageOffset.X = maxOffsetX;
+            if (imageOffset.Y > maxOffsetY)
+                imageOffset.Y = maxOffsetY;
+
+            // Ensure the image does not go outside the right/bottom boundaries
+            if (imageOffset.X < pictureBox2.Width - pictureBox2.Image.Width)
+                imageOffset.X = pictureBox2.Width - pictureBox2.Image.Width;
+            if (imageOffset.Y < pictureBox2.Height - pictureBox2.Image.Height)
+                imageOffset.Y = pictureBox2.Height - pictureBox2.Image.Height;
+
+            // Refresh to apply changes
+            pictureBox2.Invalidate();
+        }
+
+
+        private void SetInitialMapPosition(Point initialLocation)
+        {
+            if (pictureBox2.Image == null) return;
+
+            int formCenterX = pictureBox2.Width / 2;
+            int formCenterY = pictureBox2.Height / 2;
+
+            imageOffset.X = formCenterX - initialLocation.X;
+            imageOffset.Y = formCenterY - initialLocation.Y;
+
+            // Redraw to apply changes
+            pictureBox2.Invalidate();
+        }
+
         private void Locations()
         {
             selectedRowIndex = unitGridView.CurrentCell.RowIndex;
@@ -193,16 +326,76 @@ namespace WindowsFormsApp1
 
                 if (!string.IsNullOrEmpty(callSign))
                 {
-                    // Open the StatusForm to select a new status
+                    // Prompt the user to enter the location
                     string location = Prompt.ShowDialog("Enter the location", "Location");
-                    unitGridView.Rows[selectedRowIndex].Cells["Location"].Value = location;
-                    unit.Location = location;
+
+                    // Remove the old marker associated with the previous location (if it exists)
+                    if (unit.Location != "Unknown" && postalCoordinates.ContainsKey(unit.Location))
+                    {
+                        currentMarkers.RemoveAll(m => m.Equals(postalCoordinates[unit.Location]));
+                    }
+
+                    // If the location exists in the postal coordinates, move the marker
+                    if (postalCoordinates.TryGetValue(location, out Point mapCoordinates))
+                    {
+                        // Add the new marker location
+                        currentMarkers.Add(mapCoordinates);
+
+                        // Update the DataGridView and unit list
+                        unitGridView.Rows[selectedRowIndex].Cells["Location"].Value = location;
+                        unit.Location = location;
+
+                        // Center map on new location and refresh markers
+                        DrawMarkersOnMap();
+                        CenterMapOnLocation(mapCoordinates);
+                    }
+                    else
+                    {
+                        // If the location is cleared or invalid, remove the marker
+                        if (!string.IsNullOrEmpty(unit.Location) && postalCoordinates.ContainsKey(unit.Location))
+                        {
+                            currentMarkers.RemoveAll(m => m.Equals(postalCoordinates[unit.Location]));
+                        }
+
+                        // Clear the image and redraw without the marker
+                        pictureBox2.Image = new Bitmap(pictureBox2.Image);
+                        pictureBox2.Refresh();
+
+                        // Clear location and refresh grid
+                        unitGridView.Rows[selectedRowIndex].Cells["Location"].Value = location;
+                        unit.Location = location;
+                    }
+
                     unitGridView.ClearSelection();
                     unitGridView.Refresh();
                 }
             }
         }
-        
+
+        private void DrawMarkersOnMap()
+        {
+            if (pictureBox2.Image == null) return;
+
+            // Create a copy of the image to draw on
+            Bitmap tempMap = new Bitmap(pictureBox2.Image);
+
+            using (Graphics g = Graphics.FromImage(tempMap))
+            {
+                // Draw each marker based on currentMarkers
+                foreach (var markerLocation in currentMarkers)
+                {
+                    Brush markerBrush = new SolidBrush(Color.Red);
+                    g.FillEllipse(markerBrush, markerLocation.X - 5, markerLocation.Y - 5, 10, 10); // Draw a small red dot
+                }
+            }
+
+            // Update the PictureBox with the modified image
+            pictureBox2.Image = tempMap;
+            pictureBox2.Refresh();
+        }
+
+
+
         private void Activity()
         {
             selectedRowIndex = unitGridView.CurrentCell.RowIndex;
@@ -343,13 +536,17 @@ namespace WindowsFormsApp1
             string nameText = name.Text.Trim();
             string department = comboBox1.SelectedItem?.ToString();
 
-            if (string.IsNullOrEmpty(CallSign) || string.IsNullOrEmpty(nameText))
+            if (string.IsNullOrEmpty(CallSign))
             {
-                MessageBox.Show("Call Sign, Name, and Department are required!");
+                MessageBox.Show("Call Sign is required!");
+                return;
+            }else if(string.IsNullOrEmpty(nameText))
+            {
+                MessageBox.Show("Name is required!");
                 return;
             }
 
-            string callprefix = "";
+                string callprefix = "";
             switch (department)
             {
                 case "LSPD":
@@ -486,7 +683,7 @@ namespace WindowsFormsApp1
             activeGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             activeGridView.ColumnHeadersVisible = false;
             activeGridView.RowHeadersVisible = false;
-            activeGridView.DefaultCellStyle.Font = new Font("Impact", 15);
+            activeGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
 
             foreach (DataGridViewColumn column in activeGridView.Columns)
             {
@@ -512,7 +709,7 @@ namespace WindowsFormsApp1
                 {
                     Name = "Remove",
                     HeaderText = "",
-                    Text = "Remove",
+                    Text = "Delete",
                     UseColumnTextForButtonValue = true
                 };
                 unitGridView.Columns.Add(btnRemove);
@@ -638,7 +835,7 @@ namespace WindowsFormsApp1
                 {
                     Text = $"{callSign} status timer: {elapsedTime:mm\\:ss}",
                     ForeColor = Color.White,
-                    Font = new Font("Impact", 12),
+                    Font = new Font("Segoe UI", 12),
                     AutoSize = true,
                     Location = new Point(xOffset, yOffset)
                 };
@@ -686,6 +883,18 @@ namespace WindowsFormsApp1
                         break;
                 }
                 
+            }
+            if (e.RowIndex >= 0 && unitGridView.Columns[e.ColumnIndex].Name == "Status")
+            {
+                string department = e.Value?.ToString();
+                switch (department)
+                {
+                    case "Available":
+                    e.CellStyle.BackColor = Color.LightGreen;
+                    e.CellStyle.ForeColor = Color.Black;
+                        e.CellStyle.SelectionForeColor = Color.Transparent;
+                    break;
+                }
             }
         }
 
@@ -749,10 +958,11 @@ namespace WindowsFormsApp1
             unitGridView.EnableHeadersVisualStyles = false;
             unitGridView.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(64, 64, 64);
             unitGridView.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            unitGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Impact", 12);
+            unitGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 12);
+            unitGridView.ColumnHeadersHeight = 40;
             unitGridView.DefaultCellStyle.BackColor = Color.FromArgb(64, 64, 64);
             unitGridView.DefaultCellStyle.ForeColor = Color.White;
-            unitGridView.DefaultCellStyle.Font = new Font("Impact", 12);
+            unitGridView.DefaultCellStyle.Font = new Font("Segoe UI", 12);
             unitGridView.RowTemplate.Height = 30;
             unitGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(80, 80, 80);
             unitGridView.AlternatingRowsDefaultCellStyle.ForeColor = Color.White;
@@ -783,6 +993,16 @@ namespace WindowsFormsApp1
             activeGridView.MultiSelect = false;
             activeGridView.AllowUserToResizeRows = false;
             activeGridView.ReadOnly = true;
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void callSign_TextChanged_1(object sender, EventArgs e)
+        {
+
         }
     }
 }
